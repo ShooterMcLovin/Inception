@@ -1,0 +1,9 @@
+
+# Git files
+.git
+
+# Documentation
+*.md
+
+# Secrets
+.env
