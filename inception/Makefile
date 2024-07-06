@@ -6,9 +6,9 @@ COMPOSE_FILE := srcs/docker-compose.yml
 
 run:
 	mkdir -p /home/alexis/data/wordpress
-	sudo chmod 777 /Users/alexis/data/wordpress
+	sudo chmod 777 /home/alexis/data/wordpress
 	mkdir -p /home/alexis/data/mariadb
-	sudo chmod 777 /Users/alexis/data/mariadb
+	sudo chmod 777 /home/alexis/data/mariadb
 	docker-compose -f $(COMPOSE_FILE) up --build
 
 stop:
