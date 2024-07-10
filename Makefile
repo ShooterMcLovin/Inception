@@ -23,9 +23,18 @@ run:
 	sudo docker-compose $(NAME) $(COMPOSE_FILE) up
 
 compose:
+	mkdir -p /home/alpicard/data/mariadb
+	mkdir -p /home/alpicard/data/wordpress
+	sudo chmod 777 /home/alpicard/data/mariadb
+	sudo chmod 777 /home/alpicard/data/wordpress
 	sudo docker-compose $(NAME) $(COMPOSE_FILE) up --build
 
+fclean: clean
+	docker volume rm -f inception_mariadb_data
+	docker volume rm -f inception_wordpress_data
 clean:
+	sudo rm -rf /home/alpicard/data/mariadb
+	sudo rm -rf /home/alpicard/data/wordpress
 	sudo docker system prune -f
 	sudo docker volume prune -f
 

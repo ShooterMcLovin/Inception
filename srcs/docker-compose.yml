@@ -45,15 +45,16 @@ volumes:
   mariadb_data:
     driver: local
     driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: /home/alexis/data/mariadb
+      type: none
+      o: bind
+      device: /home/alpicard/data/mariadb
+
   wordpress_data:
     driver: local
     driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: /home/alexis/data/wordpress
+      type: none
+      o: bind
+      device: /home/alpicard/data/wordpress
 
 networks:
   frontend:
