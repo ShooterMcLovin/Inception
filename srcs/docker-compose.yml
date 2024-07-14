@@ -1,9 +1,9 @@
-version: "3.9"
 
 services:
   nginx:
     container_name: nginx
-    build: requirements/nginx/
+    build:
+      context: requirements/nginx/
     ports:
       - "443:443"
     volumes:
@@ -11,10 +11,13 @@ services:
     networks:
       - frontend
     restart: unless-stopped
+    env_file:
+      - .env
 
   wordpress:
     container_name: wordpress
-    build: requirements/wordpress/
+    build:
+      context: requirements/wordpress/
     expose:
       - "9000"
     volumes:
@@ -30,7 +33,8 @@ services:
 
   mariadb:
     container_name: mariadb
-    build: requirements/mariadb/
+    build:
+      context: requirements/mariadb/
     expose:
       - "3306"
     volumes:

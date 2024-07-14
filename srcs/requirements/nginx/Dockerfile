@@ -1,17 +1,21 @@
+# Use Alpine Linux 3.16 as base image
 FROM alpine:3.16
 
-RUN apk update && apk add nginx openssl
+# Install NGINX and OpenSSL
+RUN apk update && \
+    apk add --no-cache nginx openssl
 
+# Create necessary directories
 RUN mkdir -p /var/www/html /etc/nginx/ssl /run/nginx
 
+# Copy NGINX configuration file
 COPY conf/nginx.conf /etc/nginx/http.d/default.conf
 
-# nginx ssl
-RUN mkdir -p /etc/nginx/ssl
+# Generate SSL certificate and key
 RUN openssl req -newkey rsa:4096 -x509 -sha256 -days 365 -nodes \
         -out /etc/nginx/ssl/sslcert.crt \
         -keyout /etc/nginx/ssl/sslcert.key \
-        -subj "/C=CA/ST=Quebec/L=Quebec City/O=42School/OU=42Quebec/CN=alpicard.42.fr"
+        -subj "/C=CA/ST=Quebec/L=42Quebec/O=42School/OU=42Quebec/CN=alpicard.42.fr"
 
-# start nginx
-CMD [ "nginx", "-g", "daemon off;" ]
+# Start NGINX in the foreground
+CMD ["nginx", "-g", "daemon off;"]

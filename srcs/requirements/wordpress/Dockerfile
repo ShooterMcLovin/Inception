@@ -5,6 +5,7 @@ RUN adduser -u 82 -D -S -G www-data www-data
 
 # Wordpress-CLI dependancies
 RUN apk add --no-cache \
+	php \
 	curl \
 	openssl \
 	bash \

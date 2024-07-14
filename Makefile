@@ -19,24 +19,22 @@ COMPOSE_FILE	= -f ./srcs/docker-compose.yml
 #                                 TARGETS                                      #
 #------------------------------------------------------------------------------#
 
-run:
+run: dir
 	sudo docker-compose $(NAME) $(COMPOSE_FILE) up
 
-compose:
-	mkdir -p /home/alpicard/data/mariadb
-	mkdir -p /home/alpicard/data/wordpress
-	sudo chmod 777 /home/alpicard/data/mariadb
-	sudo chmod 777 /home/alpicard/data/wordpress
-	sudo docker-compose $(NAME) $(COMPOSE_FILE) up --build
+compose: dir
+	sudo docker-compose $(NAME) $(COMPOSE_FILE) up --build -d
 
-fclean: clean
-	docker volume rm -f inception_mariadb_data
-	docker volume rm -f inception_wordpress_data
-clean:
-	sudo rm -rf /home/alpicard/data/mariadb
-	sudo rm -rf /home/alpicard/data/wordpress
+fclean: down clean
 	sudo docker system prune -f
 	sudo docker volume prune -f
+	sudo docker image prune -a
+	sudo docker volume rm -f inception_mariadb_data
+	sudo docker volume rm -f inception_wordpress_data
+
+clean:
+	sudo rm -rf /home/$(USER)/data/mariadb
+	sudo rm -rf /home/$(USER)/data/wordpress
 
 attach-wp:
 	sudo docker exec -it wordpress sh
@@ -47,7 +45,13 @@ attach-maria:
 attach-nginx:
 	sudo docker exec -it nginx sh
 
+dir:
+	mkdir -p /home/$(USER)/data/mariadb
+	mkdir -p /home/$(USER)/data/wordpress
+	sudo chmod 777 /home/$(USER)/data/mariadb
+	sudo chmod 777 /home/$(USER)/data/wordpress
+
 re: clean compose
 
 down:
-	docker-compose -f $(COMPOSE_FILE) down -v
+	docker-compose $(COMPOSE_FILE) down -v
