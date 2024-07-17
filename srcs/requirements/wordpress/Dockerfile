@@ -1,42 +1,15 @@
-FROM alpine:3.16
+# Use a specific base image that includes PHP 8.3 or higher
+FROM php:8.3-fpm-alpine3.19
 
-# Ensures www-data user exists
-RUN adduser -u 82 -D -S -G www-data www-data
+# Update and install required packages
+RUN apk update && \
+    apk add --no-cache \
+    curl \
+    openssl \
+    bash \
+    mariadb-client
 
-# Wordpress-CLI dependancies
-RUN apk add --no-cache \
-	php \
-	curl \
-	openssl \
-	bash \
-	mariadb-client \
-	php8 \
-	php8-fpm \
-	php8-opcache \
-	php8-mysqli \
-	php8-session \
-	php8-iconv \
-	php8-json \
-	php8-gd \
-	php8-curl \
-	php8-xml \
-	php8-common \
-	php8-imap \
-	php8-cgi \
-	php8-pdo \
-	php8-pdo_mysql \
-	php8-soap \
-	php8-posix \
-	php8-redis \
-	php8-gettext \
-	php8-ldap \
-	php8-ctype \
-	php8-dom \
-	php8-phar
-
-
-# php-fpm config
-COPY conf/www.conf /etc/php8/php-fpm.d/
+RUN docker-php-ext-install mysqli
 
 # install WordPress-CLI
 RUN curl -o /usr/local/bin/wp -fL https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar; \
@@ -45,12 +18,18 @@ RUN curl -o /usr/local/bin/wp -fL https://raw.githubusercontent.com/wp-cli/build
 
 # /var/www/html setup
 RUN set -ex; \
+	addgroup -g 82 -S www-data && \
+	adduser -u 82 -D -S -G www-data www-data;\
 	mkdir -p /var/www/html; \
 	chown -R www-data:www-data /var/www/html
 
+# PHP-FPM config
+COPY conf/www.conf /etc/php8/php-fpm.d/
 
 COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 WORKDIR /var/www/html
 ENTRYPOINT [ "sh", "/usr/local/bin/docker-entrypoint.sh" ]
 
-CMD [ "php-fpm8", "-F", "-R"]
+CMD ["php-fpm"]

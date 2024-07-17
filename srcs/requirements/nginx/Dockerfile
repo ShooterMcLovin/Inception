@@ -1,5 +1,4 @@
-# Use Alpine Linux 3.16 as base image
-FROM alpine:3.16
+FROM alpine:3.19
 
 # Install NGINX and OpenSSL
 RUN apk update && \

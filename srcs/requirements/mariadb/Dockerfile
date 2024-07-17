@@ -1,4 +1,4 @@
-FROM alpine:3.16
+FROM alpine:3.19
 
 RUN apk update && apk upgrade
 RUN apk add mariadb mariadb-client
@@ -17,5 +17,4 @@ RUN mkdir -p /run/mysqld; \
 COPY docker-entrypoint.sh /tmp/docker-entrypoint.sh
 ENTRYPOINT [ "sh", "/tmp/docker-entrypoint.sh" ]
 
-# Loads mysqld as PID 1
 CMD [ "mysqld" ]
